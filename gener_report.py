@@ -2,7 +2,7 @@ from docxtpl import DocxTemplate
 # для года
 import datetime
 
-def generator(name, group, teacher, rank, degree, position, subject, typework, namework, year, department, founder, uni):
+def generator(name, group, teacher, rank, degree, position, subject, typework, namework, year, department, founder, uni, type2, point, lecturer,how):
     doc = DocxTemplate("template.docx")
     context = { 'name' : name,
                 'group' : group,
@@ -14,7 +14,8 @@ def generator(name, group, teacher, rank, degree, position, subject, typework, n
                 'year' : year,
                 'department' : department,
                 'founder' : founder,
-                'uni' : uni}
+                'uni' : uni, 
+                'type2' : type2, 'point' : point, 'lecturer' : lecturer, 'how' : how}
     doc.render(context)
     doc.save("report.docx")
     
@@ -155,8 +156,36 @@ if not_empty(founder) == True:
         uni = input()
 else:
     uni = "ГУАП"
+if typework.find("КОНТРОЛЬНАЯ") != -1:
+    type2 = ""
+    point = "ОЦЕНКА"
+    lecturer = "ПРЕПОДАВАТЕЛЬ"
+    how = "по дисциплине"
+if typework.find("ПРОЕКТУ") != -1:
+    type2 = "КУРСОВОЙ ПРОЕКТ"
+    point = "ЗАЩИЩЕН С ОЦЕНКОЙ"
+    lecturer = "РУКОВОДИТЕЛЬ"
+    how = "по дисциплине"
+if typework.find("КУРСОВОЙ РАБОТЕ ") != -1:
+    type2 = "КУРСОВОЙ РАБОТА"
+    point = "ЗАЩИЩЕНА С ОЦЕНКОЙ"
+    lecturer = "РУКОВОДИТЕЛЬ"
+    how = "по дисциплине"
+   
+if typework.find("ЛАБОР") != -1:
+    type2 = "ОТЧЕТ"
+    point = "ЗАЩИЩЕН С ОЦЕНКОЙ"
+    lecturer = "ПРЕПОДАВАТЕЛЬ"
+    how = "по курсу"
+    
+if typework.find("РЕФЕРАТ") != -1:
+    type2 = ""
+    point = "ОЦЕНКА РЕФЕРАТА"
+    lecturer = "РУКОВОДИТЕЛЬ"
+    how = "по дисциплине"
+
 #вызов заполнения
-generator(name, group, teacher, rank, degree, position, subject, typework, namework, year, department, founder, uni)
+generator(name, group, teacher, rank, degree, position, subject, typework, namework, year, department, founder, uni, type2, point, lecturer, how)
 
 
 
