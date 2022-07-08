@@ -1,5 +1,8 @@
 from docxtpl import DocxTemplate
-def generator(name, group, teacher, rank, degree, position, subject, typework, namework, year):
+# для года
+import datetime
+
+def generator(name, group, teacher, rank, degree, position, subject, typework, namework, year, department, founder, uni):
     doc = DocxTemplate("template.docx")
     context = { 'name' : name,
                 'group' : group,
@@ -8,22 +11,54 @@ def generator(name, group, teacher, rank, degree, position, subject, typework, n
                 'subject' : subject,
                 'typework' : typework,
                 'namework' : namework, 
-                'year' : year}
+                'year' : year,
+                'department' : department,
+                'founder' : founder,
+                'uni' : uni}
     doc.render(context)
     doc.save("report.docx")
-
+    
+# функция для проверки строки на число
+def is_number(str):
+    try:
+        float(str)
+        return True
+    except ValueError:
+        return False
+# функция на проверку пустоты
+def not_empty(str):
+        if str == "":
+            return False
+        else:
+            return True
+        
 # основная программа
+# год текущий
+now = datetime.datetime.now()
+year = now.year 
 # ввод данных о студенте
 print("Введите фамилию и инициалы студента: ")
 name = input()
+# проверка на пустоту
+while(not_empty(name) != True):
+    print("Введите фамилию и инициалы студента. Данное поле не может быть пустым! ")
+    name = input()
 # фамилия должна быть с большой буквы и инициалы тоже
 # так же эта функция оставляет в верхнем регисторе только первые буквы слов
 name = name.title()
 print("Введите номер группы студента: ")
 group = input()
+# проверка на пустоту
+while(not_empty(group) != True):
+    print("Введите номер группы студента. Данное поле не может быть пустым! ")
+    group = input()
 # ввод данных о преподавателе
 print("Введите фамилию и инициалы преподавателя: ")
 teacher = input()
+# проверка на пустоту
+while(not_empty(teacher) != True):
+    print("Введите фамилию и инициалы преподавателя. Данное поле не может быть пустым! ")
+    teacher = input()
 # имя должно быть с большой буквы и инициалы тоже
 teacher = teacher.title()
 print("Введите звание преподавателя. Если его нет, введите слово нет: ")
@@ -40,7 +75,7 @@ while a == 0:
     print("Введите должность преподавателя. Если её нет, введите слово нет:")
     position = input()
     position = position.lower()
-    if degree != "нет" and position == "старший преподаватель":
+    if (degree != "нет" or degree == "") and position == "старший преподаватель":
         print("Ошибка! Старший преподаватель не может иметь степень!")
     else:
         a = 1;
@@ -67,20 +102,61 @@ else:
 # ввод данных о предмете
 print("Введите название дисциплины: ")
 subject = input()
+# проверка на пустоту
+while(not_empty(subject) != True):
+    print("Введите название дисциплины. Данное поле не может быть пустым! ")
+    subject = input()
 # перевод всей строки в верхней регистор
 subject = subject.upper()
+
 print("Введите тип работы: ")
 typework = input()
+# проверка на пустоту
+while(not_empty(typework) != True):
+    print("Введите тип работы. Данное поле не может быть пустым! ")
+    typework = input()
 # перевод всей строки в верхней регистор
 typework = typework.upper()
+
 print("Введите название работы: ")
 namework = input()
+# проверка на пустоту
+while(not_empty(namework) != True):
+    print("Введите название работы. Данное поле не может быть пустым! ")
+    namework = input()
 # перевод всей строки в верхней регистор
 namework = namework.upper()
-print("Введите год выполнения работы: ")
-year = input()
+
+# заполнение заголовка
+# ввод кафедры
+print("Введите номер или название кафедры: ")
+department = input()
+# проверка на пустоту
+while(not_empty(department) != True):
+    print("Введите год выполнения работы. Данное поле не может быть пустым! ")
+    department = input()
+if is_number(department) == True: 
+    department = "№" + department
+else:
+    department = department.upper()
+# заполнение данных о ВУЗе
+print("Приналичии введите учередителя ВУЗа. Если такого не имеется, пропустите данное заполнение")
+founder = input()
+founder = founder.upper()
+
+# заполнение названия ВУЗа
+# рассматриваем только ГУАП
+if not_empty(founder) == True:
+    print("Введите название ВУЗа")
+    uni = input()
+    # проверка на пустоту
+    while(not_empty(uni) != True):
+        print("Введите название ВУЗа. Данное поле не может быть пустым! ")
+        uni = input()
+else:
+    uni = "ГУАП"
 #вызов заполнения
-generator(name, group, teacher, rank, degree, position, subject, typework, namework, year)
+generator(name, group, teacher, rank, degree, position, subject, typework, namework, year, department, founder, uni)
 
 
 
