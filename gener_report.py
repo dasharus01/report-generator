@@ -6,12 +6,13 @@ import sys
 
 from docx import Document
 from docx.shared import Inches
-def generator1(founder, name, faculty, department):
+def generator1(founder, name, faculty, department,namestudent):
     doc = DocxTemplate("template.docx")
     context = { 'founder' : founder, 
                 'name' : name,
                 'faculty' : faculty,
-                'department' : department}
+                'department' : department,
+                'namestudent' : namestudent}
     doc.render(context)
     doc.save("report.docx")
 
@@ -30,6 +31,7 @@ founder = ""
 name = ""
 faculty = ""
 department = ""
+namestudent = ""
 k = len (sys.argv)
 if sys.argv[1] == "МИНИСТЕРСТВО": 
     founder  = sys.argv[1]
@@ -99,7 +101,17 @@ if department == "":
 if founder == "" and name == "":
     founder = "МИНИСТЕРСТВО НАУКИ И ВЫСШЕГО ОБРАЗОВАНИЯ РОССИЙСКОЙ ФЕДЕРАЦИИ"
     name = "федеральное государственное автономное образовательное учреждение высшего образования «САНКТ-ПЕТЕРБУРГСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ АЭРОКОСМИЧЕСКОГО ПРИБОРОСТРОЕНИЯ»"
-generator1(founder, name, faculty, department)
+namestudent = sys.argv[i] + " " 
+i = i+1
+j = 0 
+while sys.argv[i] != ",":
+    if sys.argv[i] != " " and j == 0:
+        namestudent = namestudent  + sys.argv[i][0] + "."
+        j = j + 1
+    elif sys.argv[i] != " " and j != 0:
+        namestudent = namestudent  + sys.argv[i][0] 
+    i = i+1
+generator1(founder, name, faculty, department,namestudent)
 
 
 
