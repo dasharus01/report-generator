@@ -20,23 +20,64 @@ now = datetime.datetime.now()
 year = now.year 
 def pr (d):
     doc = DocxTemplate('template.docx')
+    # поднимаем регистор
+    d['organisation']['department'] = d['organisation']['department'].upper()
+    d['report']['task_type'] = d['report']['task_type'].upper()
+    d['report']['task_name'] = d['report']['task_name'].upper()
+    d['report']['subject_name'] = d['report']['subject_name'].upper()
     #преобразуем имя студента
     if d['student'].get('patronymic', ""):
         names = d['student']['surname'] + " " + d['student']['name'][0] + "." + d['student']['patronymic'][0] + "."
     else:
         names = d['student']['surname'] + " " + d['student']['name'][0] + "."
+    # преобразуем имя преподавателя
     if d['teacher'].get('patronymic', ""):
         teachern = d['teacher']['surname'] + " " + d['teacher']['name'][0] + "." + d['teacher']['patronymic'][0] + "."
     else:
         teachern = d['teacher']['surname'] + " " + d['teacher']['name'][0] + "."
+    # наличие студ.билета
     studbilet = ""
     identity_card = ""
     if d['student'].get('identity_card', ""):
         studbilet = "Студенческий билет №"
         identity_card = d['student']['identity_card']
+    # наличие факультета
     faculty = ""
     if d['organisation'].get('faculty', ""):
-        faculty = d['organisation']['faculty']
+        faculty = d['organisation']['faculty'].upper()
+    # заполнение атоматической части
+    if d['report']['task_type'].find("КОНТРОЛЬНАЯ") != -1:
+        type2 = ""
+        point = "ОЦЕНКА"
+        lecturer = "ПРЕПОДАВАТЕЛЬ"
+        how = "по дисциплине"
+        a = 1
+    elif d['report']['task_type'].find("ПРОЕКТУ") != -1:
+        type2 = "КУРСОВОЙ ПРОЕКТ"
+        point = "ЗАЩИЩЕН С ОЦЕНКОЙ"
+        lecturer = "РУКОВОДИТЕЛЬ"
+        how = "по дисциплине"
+        a = 1
+    elif d['report']['task_type'].find("КУРСОВОЙ РАБОТЕ ") != -1:
+        type2 = "КУРСОВОЙ РАБОТА"
+        point = "ЗАЩИЩЕНА С ОЦЕНКОЙ"
+        lecturer = "РУКОВОДИТЕЛЬ"
+        how = "по дисциплине"
+        a = 1
+    elif d['report']['task_type'].find("ЛАБОР") != -1:
+        type2 = "ОТЧЕТ"
+        point = "ЗАЩИЩЕН С ОЦЕНКОЙ"
+        lecturer = "ПРЕПОДАВАТЕЛЬ"
+        how = "по курсу"
+        a=1
+        
+    elif d['report']['task_type'].find("РЕФЕРАТ") != -1:
+        type2 = ""
+        point = "ОЦЕНКА РЕФЕРАТА"
+        lecturer = "РУКОВОДИТЕЛЬ"
+        how = "по дисциплине"
+        a=1
+    # заполнение шаблона
     context = {'founder' : d['organisation']['founder'],
                'name' : d['organisation']['name'],
                'faculty' : faculty,
@@ -50,7 +91,8 @@ def pr (d):
                'subject' : d['report']['subject_name'],
                'status' : d['teacher']['status'],
                'teachername' : teachern,
-               'year' : year
+               'year' : year,
+               'type2' : type2, 'point' : point, 'lecturer' : lecturer, 'how' : how
               }
     doc.render(context)
     doc.save('report.docx')
