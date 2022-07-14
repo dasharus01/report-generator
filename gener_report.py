@@ -21,7 +21,7 @@ year = now.year
 def pr (d):
     doc = DocxTemplate('template.docx')
     #преобразуем имя студента
-    if d['student']['patronymic'] != "":
+    if d['student'].get('patronymic', ""):
         names = d['student']['surname'] + " " + d['student']['name'][0] + "." + d['student']['patronymic'][0] + "."
     else:
         names = d['student']['surname'] + " " + d['student']['name'][0] + "."
