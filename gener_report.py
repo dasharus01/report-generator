@@ -25,20 +25,25 @@ def pr (d):
         names = d['student']['surname'] + " " + d['student']['name'][0] + "." + d['student']['patronymic'][0] + "."
     else:
         names = d['student']['surname'] + " " + d['student']['name'][0] + "."
-    if d['teacher']['patronymic'] != "":
+    if d['teacher'].get('patronymic', ""):
         teachern = d['teacher']['surname'] + " " + d['teacher']['name'][0] + "." + d['teacher']['patronymic'][0] + "."
     else:
         teachern = d['teacher']['surname'] + " " + d['teacher']['name'][0] + "."
     studbilet = ""
-    if d['student']['identity_card'] != "":
+    identity_card = ""
+    if d['student'].get('identity_card', ""):
         studbilet = "Студенческий билет №"
+        identity_card = d['student']['identity_card']
+    faculty = ""
+    if d['organisation'].get('faculty', ""):
+        faculty = d['organisation']['faculty']
     context = {'founder' : d['organisation']['founder'],
                'name' : d['organisation']['name'],
-               'faculty' : d['organisation']['faculty'],
+               'faculty' : faculty,
                'department' : d['organisation']['department'],
                'namestudent' : names,
                'group' : d['student']['group'],
-               'ids' : d['student']['identity_card'],
+               'ids' : identity_card,
                'studbilet' : studbilet,
                'typework' : d['report']['task_type'],
                'namework' : d['report']['task_name'],
