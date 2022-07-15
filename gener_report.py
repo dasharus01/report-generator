@@ -3,7 +3,6 @@ from docxtpl import DocxTemplate
 import datetime
 # для получения данных из консоли
 import sys
-
 from docx import Document
 from docx.shared import Inches
 import argparse
@@ -51,32 +50,34 @@ def pr (d):
         point = "ОЦЕНКА"
         lecturer = "ПРЕПОДАВАТЕЛЬ"
         how = "по дисциплине"
-        a = 1
+        
     elif d['report']['task_type'].find("ПРОЕКТУ") != -1:
         type2 = "КУРСОВОЙ ПРОЕКТ"
         point = "ЗАЩИЩЕН С ОЦЕНКОЙ"
         lecturer = "РУКОВОДИТЕЛЬ"
         how = "по дисциплине"
-        a = 1
+       
     elif d['report']['task_type'].find("КУРСОВОЙ РАБОТЕ ") != -1:
         type2 = "КУРСОВОЙ РАБОТА"
         point = "ЗАЩИЩЕНА С ОЦЕНКОЙ"
         lecturer = "РУКОВОДИТЕЛЬ"
         how = "по дисциплине"
-        a = 1
+        
     elif d['report']['task_type'].find("ЛАБОР") != -1:
         type2 = "ОТЧЕТ"
         point = "ЗАЩИЩЕН С ОЦЕНКОЙ"
         lecturer = "ПРЕПОДАВАТЕЛЬ"
         how = "по курсу"
-        a=1
+        
         
     elif d['report']['task_type'].find("РЕФЕРАТ") != -1:
         type2 = ""
         point = "ОЦЕНКА РЕФЕРАТА"
         lecturer = "РУКОВОДИТЕЛЬ"
         how = "по дисциплине"
-        a=1
+    #stri = d["report_structure"][0]
+    
+    
     # заполнение шаблона
     context = {'founder' : d['organisation']['founder'],
                'name' : d['organisation']['name'],
@@ -95,15 +96,18 @@ def pr (d):
                'type2' : type2, 'point' : point, 'lecturer' : lecturer, 'how' : how
               }
     doc.render(context)
+    
     doc.save('report.docx')
+def main():
+    d = {}
+    args = parser.parse_args()
+    d["organisation"] = json.loads(args.org)
+    d["student"] = json.loads(args.stu)
+    d["report"] = json.loads(args.rep)
+    d["teacher"] = json.loads(args.tea)
+    #d["report_structure"] = json.loads(args.struc)
 
-d = {}
-args = parser.parse_args()
-d["organisation"] = json.loads(args.org)
-d["student"] = json.loads(args.stu)
-d["report"] = json.loads(args.rep)
-d["teacher"] = json.loads(args.tea)
-#d["report_structure"] = json.loads(args.struc)
-
-#print(len(d["report_structure"]))
-pr(d)
+    #print(d["report_structure"][0])
+    pr(d)
+if __name__ == "__main__":
+    main()
