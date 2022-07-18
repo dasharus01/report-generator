@@ -13,7 +13,7 @@ parser.add_argument('-o', '--org', help="Info about organisation")
 parser.add_argument('-s', '--stu', help="Info about student")
 parser.add_argument('-r', '--rep' , help = "Info about report")
 parser.add_argument('-t', '--tea' , help = "Info about teacher")
-#parser.add_argument('--struc' , help = "Info about paragraph")
+parser.add_argument('--struc' , help = "Info about paragraph")
 # год текущий
 now = datetime.datetime.now()
 year = now.year 
@@ -96,8 +96,22 @@ def pr (d):
                'type2' : type2, 'point' : point, 'lecturer' : lecturer, 'how' : how
               }
     doc.render(context)
-    
+    i = 0;
+    lend = len(d["report_structure"])
+    while lend != 0:
+        doc.add_heading(d["report_structure"][i], level=1)
+        doc.add_paragraph('')
+        i = i +1
+        lend = lend - 1 
     doc.save('report.docx')
+    #document = Document()
+    doc1 = open('report.docx', 'rb').read()
+    #print(doc1)
+    file = open("otus.txt", "w")
+    file.write(doc1)
+    file.close()
+    #document.add_paragraph(open('report.docx', 'rb').read())
+    #document.save('test.docx')
 def main():
     d = {}
     args = parser.parse_args()
@@ -105,9 +119,10 @@ def main():
     d["student"] = json.loads(args.stu)
     d["report"] = json.loads(args.rep)
     d["teacher"] = json.loads(args.tea)
-    #d["report_structure"] = json.loads(args.struc)
+    d["report_structure"] = json.loads(args.struc)
 
     #print(d["report_structure"][0])
     pr(d)
+    
 if __name__ == "__main__":
     main()
