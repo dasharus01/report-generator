@@ -7,6 +7,7 @@ from docx import Document
 from docx.shared import Inches
 import argparse
 import json
+import pickle
 parser = argparse.ArgumentParser()
 
 parser.add_argument('-o', '--org', help="Info about organisation")
@@ -106,10 +107,8 @@ def pr (d):
     doc.save('report.docx')
     #document = Document()
     doc1 = open('report.docx', 'rb').read()
-    #print(doc1)
-    file = open("otus.txt", "w")
-    file.write(doc1)
-    file.close()
+    return doc1
+    
     #document.add_paragraph(open('report.docx', 'rb').read())
     #document.save('test.docx')
 def main():
@@ -122,7 +121,9 @@ def main():
     d["report_structure"] = json.loads(args.struc)
 
     #print(d["report_structure"][0])
-    pr(d)
-    
+    #pr(d)
+    file = open("out.bin", "wb")
+    pickle.dump(pr(d), file)
+    file.close()
 if __name__ == "__main__":
     main()
