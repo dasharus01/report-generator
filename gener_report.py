@@ -1,4 +1,5 @@
 from docxtpl import DocxTemplate
+import io
 # для года
 import datetime
 # для получения данных из консоли
@@ -20,12 +21,33 @@ now = datetime.datetime.now()
 year = now.year 
 def pr (d):
     doc = DocxTemplate('template.docx')
+    founder = "МИНИСТЕРСТВО НАУКИ И ВЫСШЕГО ОБРАЗОВАНИЯ РОССИЙСКОЙ ФЕДЕРАЦИИ"
+    nameuni = "федеральное государственное автономное образовательное учреждение высшего образования «САНКТ-ПЕТЕРБУРГСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ АЭРОКОСМИЧЕСКОГО ПРИБОРОСТРОЕНИЯ»"
+    if not d['organisation'].get('department', ""):
+        return 2
+        sys.exit()
+    if not d['report'].get('task_type', "") or not d['report'].get('task_name', "") or not d['report'].get('subject_name', ""):
+        return 4
+        sys.exit()
+    if d['organisation'].get('name', "") and d['organisation'].get('founder', ""):
+        nameuni = d['organisation']['name']
+        founder = d['organisation']['founder']
     # поднимаем регистор
     d['organisation']['department'] = d['organisation']['department'].upper()
     d['report']['task_type'] = d['report']['task_type'].upper()
     d['report']['task_name'] = d['report']['task_name'].upper()
     d['report']['subject_name'] = d['report']['subject_name'].upper()
     #преобразуем имя студента
+    if not d['student'].get('surname', "") or not d['student'].get('name', ""):
+        return 1
+        sys.exit()
+    if not d['teacher'].get('surname', "") or not d['teacher'].get('name', ""):
+        return 1
+        sys.exit()
+    if not d['teacher'].get('status', ""):
+        return 3
+        sys.exit()
+    
     if d['student'].get('patronymic', ""):
         names = d['student']['surname'] + " " + d['student']['name'][0] + "." + d['student']['patronymic'][0] + "."
     else:
@@ -76,12 +98,12 @@ def pr (d):
         point = "ОЦЕНКА РЕФЕРАТА"
         lecturer = "РУКОВОДИТЕЛЬ"
         how = "по дисциплине"
-    #stri = d["report_structure"][0]
+    # stri = d["report_structure"][0]
     
     
     # заполнение шаблона
-    context = {'founder' : d['organisation']['founder'],
-               'name' : d['organisation']['name'],
+    context = {'founder' : founder,
+               'name' : nameuni,
                'faculty' : faculty,
                'department' : d['organisation']['department'],
                'namestudent' : names,
@@ -104,11 +126,24 @@ def pr (d):
         doc.add_paragraph('')
         i = i +1
         lend = lend - 1 
-    doc.save('report.docx')
+    #doc.save('report.docx')
     #document = Document()
-    doc1 = open('report.docx', 'rb').read()
-    return doc1
     
+    #document = Document()
+    #doc1 = open('report.docx', 'rb').read()
+   
+    ##############
+    # Create in-memory buffer
+    file_stream = io.BytesIO()
+    # Save the .docx to the buffer
+    doc.save(file_stream)
+    # Reset the buffer's file-pointer to the beginning of the file
+    file_stream.seek(0)
+    print(file_stream)
+    file = file_stream.decode('cp65001', 'ignore')
+    doc.save(file)
+    return file_stream
+    #return 
     #document.add_paragraph(open('report.docx', 'rb').read())
     #document.save('test.docx')
 def main():
@@ -122,8 +157,13 @@ def main():
 
     #print(d["report_structure"][0])
     #pr(d)
-    file = open("out.bin", "wb")
-    pickle.dump(pr(d), file)
-    file.close()
+    # os.fdopen(pr(d))
+    #print(os.fdopen(pr(d)))
+    #file = open("out.bin", "wb")
+    #pickle.dump(pr(d), file)
+    #file.close()
+    
+    #print(fp)
 if __name__ == "__main__":
     main()
+    
