@@ -1,1 +1,17 @@
-
+name: ReportTest
+on:
+    push
+jobs:
+    build:
+          runs-on: ubuntu-latest
+          steps:
+          - uses: actions/checkout@v1
+          - name: Set up Python 3.10.5
+            uses: actions/setup-python@v2
+            with:
+              python-version: 3.10.5
+          - run: pip install docxtpl
+          - run: pip install pytest
+          - name: Run tests
+            run: |
+              pytest 
