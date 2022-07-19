@@ -140,8 +140,7 @@ def pr (d):
     # Reset the buffer's file-pointer to the beginning of the file
     file_stream.seek(0)
     print(file_stream)
-    file = file_stream.decode('cp65001', 'ignore')
-    doc.save(file)
+    
     return file_stream
     #return 
     #document.add_paragraph(open('report.docx', 'rb').read())
@@ -154,15 +153,11 @@ def main():
     d["report"] = json.loads(args.rep)
     d["teacher"] = json.loads(args.tea)
     d["report_structure"] = json.loads(args.struc)
-
-    #print(d["report_structure"][0])
-    #pr(d)
-    # os.fdopen(pr(d))
-    #print(os.fdopen(pr(d)))
-    #file = open("out.bin", "wb")
-    #pickle.dump(pr(d), file)
-    #file.close()
-    
+   
+  
+    with open("ffgbfg.docx", "wb") as f:
+        for i in pr(d):
+            f.write(i)
     #print(fp)
 if __name__ == "__main__":
     main()
