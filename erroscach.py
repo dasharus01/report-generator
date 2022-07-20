@@ -92,5 +92,3 @@ def main(d):
     # ФИО студента   
     if cell[5].text != cell1[5].text:
         sys.exit(10)   
-
-
