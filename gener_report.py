@@ -24,11 +24,15 @@ def pr (d):
     founder = "МИНИСТЕРСТВО НАУКИ И ВЫСШЕГО ОБРАЗОВАНИЯ РОССИЙСКОЙ ФЕДЕРАЦИИ"
     nameuni = "федеральное государственное автономное образовательное учреждение высшего образования «САНКТ-ПЕТЕРБУРГСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ АЭРОКОСМИЧЕСКОГО ПРИБОРОСТРОЕНИЯ»"
     if not d['organisation'].get('department', ""):
-        return 2
-        sys.exit()
-    if not d['report'].get('task_type', "") or not d['report'].get('task_name', "") or not d['report'].get('subject_name', ""):
-        return 4
-        sys.exit()
+        d['organisation']['department'] = ""
+    if not d['report'].get('task_type', ""):
+        d['report']['task_type'] = ""
+        
+    if not d['report'].get('task_name', ""):
+        d['report']['task_name'] = ""
+        
+    if  not d['report'].get('subject_name', ""):
+        d['report']['subject_name'] = ""
     if d['organisation'].get('name', "") and d['organisation'].get('founder', ""):
         nameuni = d['organisation']['name']
         founder = d['organisation']['founder']
@@ -38,20 +42,29 @@ def pr (d):
     d['report']['task_name'] = d['report']['task_name'].upper()
     d['report']['subject_name'] = d['report']['subject_name'].upper()
     #преобразуем имя студента
-    if not d['student'].get('surname', "") or not d['student'].get('name', ""):
-        return 1
-        sys.exit()
-    if not d['teacher'].get('surname', "") or not d['teacher'].get('name', ""):
-        return 1
-        sys.exit()
+    if not d['student'].get('surname', ""):
+        d['student']['surname'] = " "
+    if not d['student'].get('name', ""):
+        d['student']['name'] = " "
+    
+    if not d['student'].get('group', ""):
+        d['student']['group'] = " "
+    
+    if not d['teacher'].get('surname', "") :
+        d['teacher']['surname'] = " "
+        
+    if not d['teacher'].get('name', ""):
+        d['teacher']['name'] = " "
+        
     if not d['teacher'].get('status', ""):
-        return 3
-        sys.exit()
+        d['teacher']['status'] = " "
     
     if d['student'].get('patronymic', ""):
         names = d['student']['surname'] + " " + d['student']['name'][0] + "." + d['student']['patronymic'][0] + "."
     else:
         names = d['student']['surname'] + " " + d['student']['name'][0] + "."
+  
+    
     # преобразуем имя преподавателя
     if d['teacher'].get('patronymic', ""):
         teachern = d['teacher']['surname'] + " " + d['teacher']['name'][0] + "." + d['teacher']['patronymic'][0] + "."
@@ -126,7 +139,7 @@ def pr (d):
         doc.add_paragraph('')
         i = i +1
         lend = lend - 1 
-    #doc.save('report.docx')
+    ######doc.save('result2.docx')
     #document = Document()
     
     #document = Document()
@@ -142,9 +155,7 @@ def pr (d):
     print(file_stream)
     
     return file_stream
-    #return 
-    #document.add_paragraph(open('report.docx', 'rb').read())
-    #document.save('test.docx')
+    
 def main():
     d = {}
     args = parser.parse_args()
@@ -155,7 +166,7 @@ def main():
     d["report_structure"] = json.loads(args.struc)
    
   
-    with open("ffgbfg.docx", "wb") as f:
+    with open("result.docx", "wb") as f:
         for i in pr(d):
             f.write(i)
     #print(fp)
